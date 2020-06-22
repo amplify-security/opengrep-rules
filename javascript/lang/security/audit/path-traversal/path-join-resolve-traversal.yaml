@@ -1,0 +1,137 @@
+rules:
+- id: path-join-resolve-traversal
+  patterns:
+  - pattern-inside: "... $PATH = require('path'); ..."
+  - pattern-either:
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          $PATH.join(...,$Y,...);
+          ...
+        }
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          var $R = {$SMTH:$PATH.join(...,$Y,...)};
+          ...
+        }
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          $R({$SMTH:$PATH.join(...,$Y,...)});
+          ...
+        }
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          $PATH.join(...,$Y.$P,...);
+          ...
+        }
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          var $R = {$SMTH:$PATH.join(...,$Y.$P,...)};
+          ...
+        }
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          $R({$SMTH:$PATH.join(...,$Y.$P,...)});
+          ...
+        }
+    - pattern: |
+        var $X = ...;
+        ...
+        $PATH.join(...,$X,...);
+    - pattern: |
+        $X = ...;
+        ...
+        $PATH.join(...,$X,...);
+    - pattern: |
+        $PATH.join(...,$X(),...);
+    - pattern: |
+        $PATH.join(...,$X.$P(),...);
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          $PATH.resolve(...,$Y,...);
+          ...
+        }
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          var $R = {$SMTH:$PATH.resolve(...,$Y,...)};
+          ...
+        }
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          $R({$SMTH:$PATH.resolve(...,$Y,...)});
+          ...
+        }
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          $PATH.resolve(...,$Y.$P,...);
+          ...
+        }
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          var $R = {$SMTH:$PATH.resolve(...,$Y.$P,...)};
+          ...
+        }
+    - pattern: |
+        function $X(...,$Y,...) {
+          ...
+          $R({$SMTH:$PATH.resolve(...,$Y.$P,...)});
+          ...
+        }
+    - pattern: |
+        var $X = ...;
+        ...
+        $PATH.resolve(...,$X,...);
+    - pattern: |
+        $X = ...;
+        ...
+        $PATH.resolve(...,$X,...);
+    - pattern: |
+        $PATH.resolve(...,$X(),...);
+    - pattern: |
+        $PATH.resolve(...,$X.$P(),...);
+  - pattern-not: |
+      $X = "...";
+      ...
+      $PATH.join(...,$X,...);
+  - pattern-not: |
+      var $X = "...";
+      ...
+      $PATH.join(...,$X,...);
+  - pattern-not: |
+      $X = "...";
+      ...
+      $PATH.resolve(...,$X,...);
+  - pattern-not: |
+      var $X = "...";
+      ...
+      $PATH.resolve(...,$X,...);
+  - pattern-not-inside: |
+      ...
+      $R.indexOf(...);
+  - pattern-not-inside: |
+      ...
+      if (<... $R.indexOf(...) ...>) {...}
+  - pattern-not-inside: |
+      ...
+      $R.startsWith(...);
+  - pattern-not-inside: |
+      ...
+      if (<... $R.startsWith(...) ...>) {...}
+  message: |
+    Possible writing outside of the destination,
+    make sure that the target path is nested in the intended destination
+  languages: [javascript]
+  metadata:
+    owasp: 'A5: Broken Access Control'
+    cwe: 'CWE-22: Improper Limitation of a Pathname to a Restricted Directory (Path Traversal)'
+  severity: WARNING
