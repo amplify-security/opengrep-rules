@@ -1,11 +1,20 @@
 rules:
 - id: last-user-is-root
   patterns:
-  - pattern: USER root
-  - pattern-not-inside: |
-      USER root
-      ...
-      USER $USER
+    - pattern-either:
+        - patterns:
+            - pattern: USER root
+            - pattern-not-inside: |
+                USER root
+                ...
+                USER $A
+        - patterns:
+            - pattern-inside: |
+                USER $ANYTHING
+                ...
+                USER $ROOT
+            - focus-metavariable: $ROOT
+            - pattern: root
   message: >-
     The last user in the container is 'root'. This is a security
     hazard because if an attacker gains control of the container
