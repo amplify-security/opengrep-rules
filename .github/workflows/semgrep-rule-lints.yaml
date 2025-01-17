@@ -1,0 +1,48 @@
+name: semgrep-rule-lints
+
+on:
+  pull_request:
+  push:
+    branches: [develop]
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-20.04
+    name: semgrep-rule-lints
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9.2
+      - name: install semgrep
+        run: pip3 install semgrep
+      - name: lints for semgrep rules
+        run: |
+          semgrep \
+            --error \
+            --config yaml/semgrep/duplicate-id.yaml \
+            --config yaml/semgrep/duplicate-pattern.yaml \
+            --config yaml/semgrep/unsatisfiable.yaml \
+            --config yaml/semgrep/empty-message.yaml \
+            --config yaml/semgrep/missing-message-field.yaml \
+            --config yaml/semgrep/missing-language-field.yaml \
+            --config yaml/semgrep/metadata-confidence.yaml \
+            --config yaml/semgrep/metadata-likelihood.yaml \
+            --config yaml/semgrep/metadata-impact.yaml \
+            --config yaml/semgrep/metadata-subcategory.yaml \
+            --config yaml/semgrep/metadata-confidence-incorrect-value.yaml \
+            --config yaml/semgrep/metadata-likelihood-incorrect-value.yaml \
+            --config yaml/semgrep/metadata-impact-incorrect-value.yaml \
+            --config yaml/semgrep/metadata-subcategory-incorrect-value.yaml \
+            --config yaml/semgrep/metadata-incorrect-option.yaml \
+            --config yaml/semgrep/metadata-technology.yaml \
+            --config yaml/semgrep/metadata-category.yaml \
+            --config yaml/semgrep/multi-line-message.yaml \
+            --config yaml/semgrep/message-whitespace.yaml \
+            --config yaml/semgrep/metadata-deepsemgrep.yaml \
+            --config yaml/semgrep/slow-pattern-top-ellipsis.yaml \
+            --config yaml/semgrep/rule-missing-deconstructed-value.yaml \
+            --exclude *.test.yaml \
+            --exclude contrib/ \
+            --exclude stats/ \
+            --exclude yaml/semgrep/

@@ -1,0 +1,29 @@
+name: semgrep-rules-test
+
+on:
+  pull_request:
+    branches:
+    - release
+  push:
+    branches:
+    - release
+
+jobs:
+  test-latest:
+    name: rules-test-latest
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.9.2
+    - name: install semgrep via pip
+      run: pip3 install semgrep
+    - name: remove stats directory
+      run: rm -rf stats
+    - name: remove rules requiring Semgrep Pro
+      run: rm -rf apex elixir
+    - name: validate rules
+      run: semgrep validate .
+    - name: run semgrep test
+      run: semgrep test .

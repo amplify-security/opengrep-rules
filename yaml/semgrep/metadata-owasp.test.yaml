@@ -1,0 +1,113 @@
+rules:
+  - id: example-1
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ok: metadata-owasp
+      owasp: "A1: Some Vulnerability"
+  - id: example-1b
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ok: metadata-owasp
+      owasp: A05:2021 - Security Misconfiguration
+  - id: example-k8s-1
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ok: metadata-owasp
+      owasp: "K1: Insecure Workload Configurations"
+  - id: example-k8s-1b
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ok: metadata-owasp
+      owasp: K01:2022 - Insecure Workload Configurations
+  - id: example-bad-zero
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ruleid: metadata-owasp
+      owasp: "A0: Zero"
+  - id: example-bad-double-zero-year
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ruleid: metadata-owasp
+      owasp: "A00:2021 Zero"
+  - id: example-bad-missing-leading-zero
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ruleid: metadata-owasp
+      owasp: A5:2021 - Security Misconfiguration
+  - id: example-bad-greater-than-10
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ruleid: metadata-owasp
+      owasp: "A11: Some Vulnerability"
+  - id: example-bad-missing-details
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ruleid: metadata-owasp
+      owasp: a4
+  - id: example-bad-missing-colon
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ruleid: metadata-owasp
+      owasp: A5 Some Vulnerability
+  - id: example-good-list
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ok: metadata-owasp
+      owasp:
+        # ok: metadata-owasp
+        - A05:2021 - Security Misconfiguration
+        # ok: metadata-owasp
+        - A06:2017 - Security Misconfiguration
+        # ok: metadata-owasp
+        - K01:2022 - Insecure Workload Configurations
+  - id: example-bad-list
+    message: Example
+    severity: ERROR
+    languages: [json, yaml]
+    pattern: "..."
+    metadata:
+      # ok: metadata-owasp
+      owasp:
+        # ruleid: metadata-owasp
+        - A0:2021 - Zero
+        # ruleid: metadata-owasp
+        - A00:2021 - Double Zero
+        # Missing leading zero
+        # ruleid: metadata-owasp
+        - A5:2021 - Security Misconfiguration
+        # Crazy year
+        # ruleid: metadata-owasp
+        - A06:201789 - Security Misconfiguration
