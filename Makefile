@@ -47,15 +47,14 @@ LANG_DIRS=\
  terraform \
  typescript \
  yaml
-PRO_DIRS=apex elixir
 OTHER_DIRS=ai problem-based-packs
-DIRS=$(LANG_DIRS) $(PRO_DIRS) $(OTHER_DIRS)
+DIRS=$(LANG_DIRS) $(OTHER_DIRS)
 
 .PHONY: validate
 #old: pysemgrep --validate was also using the flags below but not needed
 # --strict --disable-version-check --metrics=off --verbose
 validate:
-	$(SEMGREP) validate --pro $(DIRS)
+	$(SEMGREP) validate $(DIRS)
 
 .PHONY: test-oss-only
 test-oss-only:
