@@ -1,0 +1,32 @@
+---
+name: Generate Amplify Ruleset
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.repository == 'amplify-security/opengrep-rules'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b  # v5.3.0
+        with:
+          python-version: '3.13'
+      - run: pip3 install pyyaml
+      - name: generate Amplify rule set
+        run: python3 scripts/generate-amplify-ruleset.py
+      - name: update latest release
+        # yes, this action is no longer maintained.
+        uses: marvinpinto/action-automatic-releases@40312c52f0ca0d0589b25e8f5172a3613f0759c3
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: latest
+          prerelease: true
+          files: |
+            rules.json
