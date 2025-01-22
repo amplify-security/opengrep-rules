@@ -21,12 +21,17 @@ done
 
 for cur in $(seq 1 $TRIES)
 do
+    # wishful thinking that the Accept header here would force JSON, but it
+    # probably doesn't. The registry returns either YAML or JSON but I have the
+    # feeling that setting Accept-Encoding to a compressed format has a higher
+    # rate of returning JSON (not objectively tested).
     curl -s "${REGISTRY}/c/${CONFIG}" -H "Accept: application/json" -H "Accept-Encoding: br" | brotli -d -f -o "${TMPFILE}"
     file "${TMPFILE}" | grep -q "JSON text data" && break
     [ $cur -eq $TRIES ] && echo "Failed to download config after ${TRIES} attempts, aborting." && clean_exit 1
     sleep 1
 done
 
+# transform the IDs to {rule_path}:{rule_id}, where rule_path should exist in repo.
 jq -r '.rules[].id' < "${TMPFILE}" | tr . '/' | perl -pe 's/(.*)\/(.*)$/$1.yaml:$2/' > "${OUTPUT}"
 echo "List of rules for ${CONFIG} written to ${OUTPUT}"
 clean_exit 0
