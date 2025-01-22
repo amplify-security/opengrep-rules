@@ -1,0 +1,32 @@
+#!/bin/bash
+
+REGISTRY=https://semgrep.dev
+TRIES=30
+
+TMPFILE="$(mktemp)"
+CONFIG="$1"
+OUTPUT="$2"
+
+clean_exit() {
+    rm -f "${TMPFILE}"
+    exit $1
+}
+
+for dep in brotli jq perl
+do
+    which $dep >/dev/null || { echo "this script requires ${dep}, please install it prior to running this."; clean_exit 1; }
+done
+
+[ -z "$CONFIG" ] || [ -z "$OUTPUT" ] && echo "Usage: $0 <config-name> <output-file>" && clean_exit 1
+
+for cur in $(seq 1 $TRIES)
+do
+    curl -s "${REGISTRY}/c/${CONFIG}" -H "Accept: application/json" -H "Accept-Encoding: br" | brotli -d -f -o "${TMPFILE}"
+    file "${TMPFILE}" | grep -q "JSON text data" && break
+    [ $cur -eq $TRIES ] && echo "Failed to download config after ${TRIES} attempts, aborting." && clean_exit 1
+    sleep 1
+done
+
+jq -r '.rules[].id' < "${TMPFILE}" | tr . '/' | perl -pe 's/(.*)\/(.*)$/$1.yaml:$2/' > "${OUTPUT}"
+echo "List of rules for ${CONFIG} written to ${OUTPUT}"
+clean_exit 0
