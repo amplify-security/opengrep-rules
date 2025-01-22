@@ -23,7 +23,7 @@ jobs:
         run: python3 scripts/generate-amplify-ruleset.py
       - name: update latest release
         # yes, this action is no longer maintained.
-        uses: marvinpinto/action-automatic-releases@40312c52f0ca0d0589b25e8f5172a3613f0759c3
+        uses: marvinpinto/action-automatic-releases@d68defdd11f9dcc7f52f35c1b7c236ee7513bcc1
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           automatic_release_tag: latest
